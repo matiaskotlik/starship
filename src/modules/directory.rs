@@ -26,6 +26,20 @@ pub fn module<'a>(context: &'a Context) -> Option<Module<'a>> {
 
     module.set_style(config.style);
 
+    if "zsh" == std::env::var("STARSHIP_SHELL").unwrap_or_default() {
+        module.create_segment(
+            "path",
+            &SegmentConfig {
+                value: "%~",
+                style: None,
+            },
+        );
+
+        module.get_prefix().set_value(config.prefix);
+
+        return Some(module)
+    }
+
     // Using environment PWD is the standard approach for determining logical path
     // If this is None for any reason, we fall back to reading the os-provided path
     let physical_current_dir = if config.use_logical_path {
